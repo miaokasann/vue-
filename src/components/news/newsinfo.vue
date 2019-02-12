@@ -1,4 +1,6 @@
+
 <template>
+<!-- 新闻正文页 -->
   <div class="tmpl">
     <div class="title">
       <p class="ptitle" v-text="article.title"></p>

@@ -1,4 +1,5 @@
 <template>
+<!-- 新闻列表页 -->
   <div class="tmpl">
     <ul class="mui-table-view">
       <li class="mui-table-view-cell mui-media" v-for="(item,index) in newslist" :key="index">

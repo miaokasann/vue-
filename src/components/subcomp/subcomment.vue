@@ -4,52 +4,88 @@
       提交评论
     </div>
       <div class="submitarea">
-        <textarea class="textarea" placeholder="请输入评论内容"></textarea>
-        <mt-button type="primary" size="large">发表</mt-button>
+        <textarea ref="postcontent" class="textarea" placeholder="请输入评论内容"></textarea>
+        <mt-button type="primary" size="large" @click="postcomment()">发表</mt-button>
       </div>
     <div class="commenttitle">
       评论列表
     </div>
       <div class="commentlist">
-        <!-- <div class="outwarp" v-for="item in comments" >
+        <div class="outwarp" v-for="item in comments">
           <div class="content" v-text="item.content"></div>
           <div class="user" v-text="item.user_name"></div>
           <div class="time" v-text="item.add_time">{{item.add_time | fmtdate('YYYY-MM-DD HH:mm:ss')}}</div>
-        </div> -->
-        <div class="outwarp">
-          <div class="content">这是一条评论</div>
-          <div class="user">我是xx</div>
-          <div class="time">2019-2-3 12:03:09</div>
-        </div>
-        <div class="outwarp">
-          <div class="content">这是一条评论</div>
-          <div class="user">我是xx</div>
-          <div class="time">2019-2-3 12:03:09</div>
         </div>
       </div>
+
+      <!-- 加载更多按钮 -->
+      <mt-button class="more" type="danger" size="large" plain @click="getmore()">加载更多</mt-button>
   </div>
 </template>
 <script>
+import common from '../../kits/common.js'
+import { Toast } from 'mint-ui' //导入mint-ui中的提示组件
+
 export default {
   data() {
     return {
-      comments:[] //用来存放当前数据的评论信息列表
+      comments:[], //用来存放当前数据的评论信息列表
+      pageindex:1 //获取评论的页码，默认为第一页
     }
+  },
+  created(){
+    this.getcomment(pageindex);
   },
   methods:{
     //1.提交评论
     postcomment(){
+      let url = 'http://localhost:8088/api/postcomment/'+this.artid;
+      //console.log(this.$refs.postcontent);//拿到文本的数据
+      //1.通过vue来获取textarea的值
+      let contentText = this.$refs.postcontent.value;
+      if(!contentText || contentText.trim().length <=0){
+        Toast('评论内容不能为空');
+        return;
+      }
+      //2.将评论数据提交到服务器
+      this.$http.post(url,{content:contentText},{emulateJSON:true}).then(res=>{
+        Toast('评论提交成功！');
 
+        //重新加载评论
+        this.getcomment(pageindex);
+
+        //清空文本框
+        this.$refs.postcontent.value = '';
+      },error=>{
+        console.log('评论提交失败');
+      });
     },
     //2.获取评论
-    getcomment(){
-      
+    getcomment(pageindex){
+      let url = 'http://localhost:8088/api/getcomments/'+this.artid+'?pageindex='+pageindex;
+      console.log(url);
+      this.$http.get(url).then(res=>{
+        //因为要实现加载更多的功能，所以不可以让最新的数据覆盖之前的数组，而是将数据追加到之前的数据后面
+        //this.comments = res.body.message;
+        this.comments = this.comments.concat(res.body.message);
+      },error=>{
+        console.log('获取评论数据失败');
+      });
+    },
+    getmore(){
+      //1.将pageindex加一
+      this.pageindex++;
+      //2.将自增后的index数据传入getcomment方法，获取数据
+      this.getcomment(this.pageindex);
     }
   },
   props:['artid'] //用来接收当前评论数据的所属内容id
 }
 </script>
 <style scoped>
+  .more{
+    margin-top: 10px;
+  }
   .tmpl{
     padding: 5px;
   }

@@ -19,10 +19,10 @@
           </router-link>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-            <a href="#">
-                <span class="mui-icon mui-icon-phone"><span class="mui-badge mui-badge-red">5</span></span>
-                <div class="mui-media-body">图片分享</div>
-            </a>
+            <router-link to="/photo/photolist">
+              <span class="mui-icon mui-icon-phone"><span class="mui-badge mui-badge-red">5</span></span>
+              <div class="mui-media-body">图片分享</div>
+            </router-link>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
             <a href="#">

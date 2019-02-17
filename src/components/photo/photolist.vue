@@ -2,17 +2,19 @@
   <div class="tmpl">
     <!-- 1.分类 -->
     <div class="cate">
-      <ul>
+      <ul id="cateul">
         <li><a @click="getimglist(0)">全部</a></li>
-        <li v-for="item in catelist"><a @click="getimglist(item.id)">{{item.title}}</a></li>
+        <li v-for="item in catelist" :key="item.index"><a @click="getimglist(item.id)">{{item.title}}</a></li>
         
       </ul>
     </div>
     <!-- 2.图片列表 -->
     <div class="imglist">
       <ul>
-        <li v-for="item in list">
-          <img v-lazy="item.img_url">
+        <li v-for="item in list" :key="item.index">
+          <router-link v-bind="{ to:'/photo/photoinfo/'+item.id}">
+            <img v-lazy="item.img_url">
+          </router-link>
           <p>
             <span class="title">{{item.title}}</span><br>
             {{item.zhaiyao}}
@@ -24,6 +26,7 @@
 </template>
 <script>
 import common from '../../kits/common.js'
+import { Indicator } from 'mint-ui'
 
 export default {
   data() {
@@ -39,17 +42,21 @@ export default {
   methods:{
     //1.获取图片数据
     getcate(){
-      let url = 'http://localhost:8088/api/getimgcategory';
+      let url = common.apihost+'/api/getimgcategory';
       this.$http.get(url).then(res=>{
         this.catelist = res.body.message;
-      },error=>{
 
-      });
+        let w = 60 * (res.body.message.length + 1);
+        document.getElementById('cateul').style.width = w+'px';
+      },error=>{});
     },
-    //2。根据分类的id获取图片的数据
+
+    //2.根据分类的id获取图片的数据
     getimglist(cateid){
-      //console.log(cateid);
-      this.list=';//这里有可能要先清空，否则有可能导致第一张图片不会被覆盖'
+      this.list='';//这里有可能要先清空，否则有可能导致第一张图片不会被覆盖'
+
+      //提醒用户正在加载
+      Indicator.open('正在加载中...');
 
       let url = common.apihost+'/api/getimages/'+cateid;
       this.$http.get(url).then(res=>{
@@ -61,10 +68,10 @@ export default {
           item.img_url = imghost + item.img_url;
         })
         this.list = tmplist;
-        console.log(tmplist);
-      },error=>{
 
-      });
+        //加载完毕
+        Indicator.close();
+      },error=>{});
     }
   }
 }
@@ -109,7 +116,7 @@ export default {
   }
   .cate ul{
     padding-left: 10px;
-    width: 10000px;
+    width: 320px;
     margin: 0;
   }
   .cate li{

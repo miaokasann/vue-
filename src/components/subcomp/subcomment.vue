@@ -34,12 +34,12 @@ export default {
     }
   },
   created(){
-    this.getcomment(pageindex);
+    this.getcomment(this.pageindex);
   },
   methods:{
     //1.提交评论
     postcomment(){
-      let url = 'http://localhost:8088/api/postcomment/'+this.artid;
+      let url = common.apihost+'/api/postcomment/'+this.artid;
       //console.log(this.$refs.postcontent);//拿到文本的数据
       //1.通过vue来获取textarea的值
       let contentText = this.$refs.postcontent.value;
@@ -52,7 +52,7 @@ export default {
         Toast('评论提交成功！');
 
         //重新加载评论
-        this.getcomment(pageindex);
+        this.getcomment(this.pageindex,true);
 
         //清空文本框
         this.$refs.postcontent.value = '';
@@ -61,13 +61,18 @@ export default {
       });
     },
     //2.获取评论
-    getcomment(pageindex){
-      let url = 'http://localhost:8088/api/getcomments/'+this.artid+'?pageindex='+pageindex;
+    getcomment(pageindex,isreload){
+      let url = common.apihost +'/api/getcomments/'+this.artid+'?pageindex='+pageindex;
       console.log(url);
       this.$http.get(url).then(res=>{
         //因为要实现加载更多的功能，所以不可以让最新的数据覆盖之前的数组，而是将数据追加到之前的数据后面
         //this.comments = res.body.message;
-        this.comments = this.comments.concat(res.body.message);
+        if(isreload){
+          this.comments = res.body.message;
+        }
+        else{
+          this.comments = this.comments.concat(res.body.message);
+        }
       },error=>{
         console.log('获取评论数据失败');
       });
@@ -102,9 +107,6 @@ export default {
     margin-top: 10px;
     border-top: 1px solid rgba(92,92,92,0.4);
     padding: 10px 0 10px 0;
-  }
-  .commentlist{
-
   }
   .outwarp{
     border-bottom: 1px solid rgba(92,92,92,0.4);

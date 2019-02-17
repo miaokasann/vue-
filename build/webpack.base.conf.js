@@ -42,6 +42,10 @@ module.exports = {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
+        test:/vue-preview.src.*?js$/, //匹配vue-preview这个组件中的js
+        loader:'babel-loader' //使用babel-loader解析es6
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig

@@ -20,7 +20,7 @@
       </router-link>
       <router-link class="mui-tab-item" to="/buycar">
         <span class="mui-icon mui-icon-gear">
-          <span class="mui-badge">5</span>
+          <span id="badge" class="mui-badge">5</span>
         </span>
         <span class="mui-tab-label">购物</span>
       </router-link>
@@ -33,6 +33,19 @@
 </template>
 
 <script>
+//6.2注册commonvue.js用来接收goodsinfo.vue中通过vueobj.$emit()发送过来的数据
+import { vueobj } from './kits/commonvue.js'
+//6.3注册接收事件
+vueobj.$on('shopdata',function(data){
+  //console.log(data);
+  //因为vuepbj和export default是不同的vue对象,所以此处必须通过操纵DOM来实现购物车数量的增加
+  let badge = document.getElementById('badge');
+  let count = badge.innerText - 0;//获取原始值
+  count+=data;//在原始值上加上新数据
+
+  //将新数据同步到DOM中
+  badge.innerText = count;
+});
 export default {
   data() {
     return{

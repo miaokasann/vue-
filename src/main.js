@@ -6,6 +6,10 @@ import router from './router/index.js'
 import vueResource from 'vue-resource'
 Vue.use(vueResource)
 
+import VuePreview from 'vue-preview'
+Vue.use(VuePreview)
+
+
 import '../static/mui/dist/css/mui.min.css'
 import '../static/mui/examples/hello-mui/css/icons-extra.css'
 import mintUI from 'mint-ui'

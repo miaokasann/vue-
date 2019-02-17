@@ -25,10 +25,10 @@
             </router-link>
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-            <a href="#">
-                <span class="mui-icon mui-icon-person"></span>
-                <div class="mui-media-body">商品购买</div>
-            </a>
+            <router-link to="/goods/goodslist">
+              <span class="mui-icon mui-icon-person"></span>
+              <div class="mui-media-body">商品购买</div>
+            </router-link>  
         </li>
         <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
             <a href="#">
@@ -60,20 +60,6 @@ import subimgsilder from '../subcomp/subimgsilder.vue'
 export default {
   data() {
     return {
-      // list:[
-      //   {
-      //     url:'http://www.baidu.com/',
-      //     img:'http://p0.ifengimg.com/pmop/2018/0124/6232C22837E0FDB272612B040662E583CF36EEFB_size17_w400_h270.jpeg'
-      //   },
-      //   {
-      //     url:'http://www.baidu.com/',
-      //     img:'http://p0.ifengimg.com/pmop/2018/0124/4F5E89F7CB861E24D290F715F972449A5FA39DA1_size166_w900_h600.jpeg'
-      //   },
-      //   {
-      //     url:'http://www.baidu.com/',
-      //     img:'../../../assets/img/star.jpg'
-      //   }
-      // ]
       list:[]
     }
   },

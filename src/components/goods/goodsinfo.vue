@@ -13,6 +13,15 @@
         购买数量:
         <!-- 放数量的组件 -->
         <subnumber class="subnumber" v-on:count="getcount"></subnumber>
+
+        <!-- 放动画小球 -->
+        <transition 
+          v-on:before-enter="beforeEnter"
+          v-on:enter="enter"
+          v-on:after-enter="afterEnter"   
+        >
+          <div class="ball" v-show="isshow"></div>
+        </transition>
       </div>
       <mt-button type="primary" size="small">立即购买</mt-button>
       <mt-button @click="toshopdata" type="danger" size="small">加入购物车</mt-button>
@@ -40,19 +49,21 @@ import subimgsilder from '../subcomp/subimgsilder.vue'
 import subnumber from '../subcomp/subnumber.vue'
 //注册commonvue.js
 import { vueobj } from '../../kits/commonvue.js'
+import { setItem } from '../../kits/localStorageHelper.js'
 
 export default {
   data() {
     return {
       imglist:[],//用来存放轮播图数据
       messagedata:{},//用来存放商品详情信息
-      goodscount:1//存放购买数量值
+      goodscount:1,//存放购买数量值
+      isshow: false,
     }
   },
   created(){
     this.getimglist();
     this.getmessage();
-    this.toshopdata();
+    // this.toshopdata();
   },
   components:{
     subimgsilder,
@@ -72,9 +83,9 @@ export default {
         }
       );
     },
-    getcount(count){
+    getcount(Obj){
       //console.log('count='+count);
-      this.goodscount = count;
+      this.goodscount = Obj.count;
     },
     getmessage(){
       let id = this.$route.params.id;
@@ -103,13 +114,61 @@ export default {
     },
     // 实现购物数据的通知
     toshopdata(){
-      // 6.1获取到购买数量
+      // 6.1获取到购买数量，发送通知
       vueobj.$emit('shopdata',this.goodscount);
-    }
+
+      // 出现动画效果
+      this.isshow = !this.isshow;
+
+      //6.2将商品的购物数据存储到localstorage
+      let id = this.$route.params.id;
+      setItem({goodsid:id,count:this.goodscount});
+    },
+    beforeEnter(el){
+      //表示小球的动画开始的状态
+      //通常使用translate3d来开启硬件加速，提高动画的流畅度
+      el.style.transform = 'translate3d(0,0,0)';
+    },
+    enter(el,done){
+      //想要有动画的过程，就必须保证页面是在刷新的
+      var offset = el.offsetWidth;//设置这句话就能保证小球在实时移动
+      //表示小球的动画进行到最后的状态
+      el.style.transform = 'translate3d(125px,330px,0)';
+      
+    },
+    afterEnter: function(el){//TODO
+      //表示小球的动画结束的状态,要将控制小球显示和隐藏的变量isshow复位
+      alert(1);
+      this.isshow = !this.isshow;
+    },
   }
 }
 </script>
 <style scoped>
+  .count{
+    position: relative;
+  }
+  .ball{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: -30px;
+    left: 95px;
+    transition: all .5s ease;
+    z-index: 50;
+    transition: all .5s cubic-bezier(.35,-0.44,.83,.67);
+    /* opacity: 0; */
+  }
+  /* 小球动画控制 */
+  /* .drop-enter-active, .drop-leave-active {
+    transition: opacity 1s;
+  }
+  .drop-enter, .drop-leave-to {
+    opacity: 0;
+    transform: translate(120px,350px);
+  } */
   .subnumber{
     display: inline-block;
     margin-bottom: 10px;

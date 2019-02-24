@@ -11,7 +11,7 @@
       评论列表
     </div>
       <div class="commentlist">
-        <div class="outwarp" v-for="item in comments">
+        <div class="outwarp" v-for="item in comments" :key="item.index">
           <div class="content" v-text="item.content"></div>
           <div class="user" v-text="item.user_name"></div>
           <div class="time" v-text="item.add_time">{{item.add_time | fmtdate('YYYY-MM-DD HH:mm:ss')}}</div>
